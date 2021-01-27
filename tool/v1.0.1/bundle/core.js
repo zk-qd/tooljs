@@ -210,12 +210,12 @@ const DateKit = {
     }
 
 }
-$date = DateKit;
+var $date = DateKit;
 console.log(DateKit.dateFormat('20200401', 'yyyy-MM-dd hh:mm:ss'));
 console.log(DateKit.dayOfMonth())
 console.log(DateKit.prevMonth())
 //Dom.js
-$dom = {
+var $dom= {
     copyText(dom) {
         return new Promise((resolve, reject) => {
             try {
@@ -241,7 +241,7 @@ $dom = {
 //Encrypt.js
 
 
-window.EncryptKit = {idNum(val) {
+var $encrypt = {idNum(val) {
         if (!val) return val;
         return val.toString().replace(/(\d{3})\d{11}(\d{4}|\d{3}[A-Z]{1})/, "$1" + "*".repeat(11) + "$2");
     }
@@ -300,7 +300,7 @@ var FormKit_Message = {
 }
 
 
-window.FormKit = {
+var $form = {
     ...FormKit_Message,
     ...FormKit_Verify,
     ...FormKit_Operation,
@@ -355,7 +355,7 @@ var HttpKit_Uri = {
     }
 }
 
-window.HttpKit = {
+var $http = {
     ...HttpKit_Judge,
     ...HttpKit_Uri,
 }
@@ -380,7 +380,7 @@ var JudgeKit_Judge = {
     },
 }
 
-window.JudgeKit = {
+var $judge = {
     ...JudgeKit_Judge,
 }
 
@@ -481,12 +481,21 @@ var MathKit_Compute = {
     }
 }
 
-window.MathKit = {
-    ...MathKit_Compute,
+var $math = {
+    ...MathKit_Compute,toFixed(num, len) {
+        num = num.toString();
+        let index = num.indexOf('.');
+        if (index !== -1) {
+            num = num.substring(0, len + index + 1)
+        } else {
+            num = num.substring(0)
+        }
+        return parseFloat(num);
+    }
 }
 
 //Object.js
-window.ObjectKit = {
+var $object = {
     deepCopy: function (obj) {
         var o;
         if (Object.prototype.toString.call(obj) === '[object Object]') {

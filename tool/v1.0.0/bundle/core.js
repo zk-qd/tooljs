@@ -482,7 +482,16 @@ var MathKit_Compute = {
 }
 
 window.MathKit = {
-    ...MathKit_Compute,
+    ...MathKit_Compute,toFixed(num, len) {
+        num = num.toString();
+        let index = num.indexOf('.');
+        if (index !== -1) {
+            num = num.substring(0, len + index + 1)
+        } else {
+            num = num.substring(0)
+        }
+        return parseFloat(num);
+    }
 }
 
 //Object.js
