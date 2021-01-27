@@ -4,34 +4,8 @@ const DateKit_Schema = {
         return new Date(val.replace(/(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})/, '$<year>/$<month>/$<day>'));
     }
 }
-const DateKit = {
+var $date = {
     ...DateKit_Schema,
-    dateFormat:/* data format v1.0 */ function (date, format) {
-
-        if (!date) date = new Date();
-        else if (date.toString().length == 8) date = this.parseSerialDate(date);
-        else date = new Date(date);
-        if (!format) format = 'yyyy-MM-dd';
-        // 注意月份是 MM 分钟是mm
-        const list = [
-            // 年
-            { match: 'yyyy', val: date.getFullYear() },
-            // 月
-            { match: 'MM', val: (date.getMonth() + 1 + '').padStart(2, '0') },
-            { match: 'dd', val: date.getDate().toString().padStart(2, '0') },
-            { match: 'hh', val: date.getHours().toString().padStart(2, '0') },
-            { match: 'mm', val: date.getMinutes().toString().padStart(2, '0') },
-            { match: 'ss', val: date.getSeconds().toString().padStart(2, '0') },
-        ]
-
-        for (let i = 0, length = list.length; i < length; i++) {
-            const item = list[i];
-            const reg = new RegExp(item.match);
-            format = format.replace(reg, item.val);
-        }
-        return format;
-
-    },
     /**
      * 格式化时间 v1.1
      * @param {Any} date 任意能够转时间的数据
@@ -39,7 +13,6 @@ const DateKit = {
      * @param {Boolean} dt 是否存在默认时间 
      * @return {String} 时间 
      *  */
-
     format: function (date, format = 'yyyy-MM-dd', dt = true) {
         if (!date && dt) date = new Date();
         else if (!date && !dt) return '';
@@ -110,9 +83,6 @@ const DateKit = {
             month = date.getMonth();
         return new Date(year, month + 1, 0).getDate();
     },
-
-
-
     prevMonth: /* 获取上个月的Date对象 */function (date) {
         if (date) date = new Date(date);
         else date = new Date();
@@ -231,8 +201,3 @@ const DateKit = {
     }
 
 }
-var $date = DateKit;
-// 测试
-console.log(DateKit.dateFormat('20200401', 'yyyy-MM-dd hh:mm:ss'));
-console.log(DateKit.dayOfMonth())
-console.log(DateKit.prevMonth())

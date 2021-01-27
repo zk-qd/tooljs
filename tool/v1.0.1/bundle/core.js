@@ -1,19 +1,7 @@
 //Array.js
 
-var ArrayKit_Context = {
-    dateSort(data) {
-        return Object.keys(data).sort().map(item => data[item]);
-    },assignSort: function (target, sortby, assign) {
-        const arr = [], copyTarget = JSON.parse(JSON.stringify(target));
-        assign.forEach((assignItem, assignIndex) => {
-            let cindex = copyTarget.findIndex(citem => sortby(citem, assignItem));
-            if (cindex !== -1) {
-                arr[assignIndex] = JSON.parse(JSON.stringify(copyTarget[cindex]));
-                copyTarget.splice(cindex, 1);
-            };
-        })
-        return arr;
-    },sort(target, type = 'up', key) {
+
+var $array = {sort(target, type = 'up', key) {
         target.sort((value1, value2) => {
             if (type == 'down') [value2, value1] = [value1, value2]
             if (key) {
@@ -23,13 +11,6 @@ var ArrayKit_Context = {
             }
         });
     },
-
-
-}
-
-
-var $array = {
-    ...ArrayKit_Context,
 }
 
 //Date.js
@@ -39,31 +20,8 @@ const DateKit_Schema = {
         return new Date(val.replace(/(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})/, '$<year>/$<month>/$<day>'));
     }
 }
-const DateKit = {
-    ...DateKit_Schema,
-    dateFormat:function (date, format) {
-
-        if (!date) date = new Date();
-        else if (date.toString().length == 8) date = this.parseSerialDate(date);
-        else date = new Date(date);
-        if (!format) format = 'yyyy-MM-dd';
-        const list = [
-            { match: 'yyyy', val: date.getFullYear() },
-            { match: 'MM', val: (date.getMonth() + 1 + '').padStart(2, '0') },
-            { match: 'dd', val: date.getDate().toString().padStart(2, '0') },
-            { match: 'hh', val: date.getHours().toString().padStart(2, '0') },
-            { match: 'mm', val: date.getMinutes().toString().padStart(2, '0') },
-            { match: 'ss', val: date.getSeconds().toString().padStart(2, '0') },
-        ]
-
-        for (let i = 0, length = list.length; i < length; i++) {
-            const item = list[i];
-            const reg = new RegExp(item.match);
-            format = format.replace(reg, item.val);
-        }
-        return format;
-
-    },format: function (date, format = 'yyyy-MM-dd', dt = true) {
+var $date = {
+    ...DateKit_Schema,format: function (date, format = 'yyyy-MM-dd', dt = true) {
         if (!date && dt) date = new Date();
         else if (!date && !dt) return '';
 
@@ -122,9 +80,6 @@ const DateKit = {
             month = date.getMonth();
         return new Date(year, month + 1, 0).getDate();
     },
-
-
-
     prevMonth:function (date) {
         if (date) date = new Date(date);
         else date = new Date();
@@ -210,12 +165,98 @@ const DateKit = {
     }
 
 }
-var $date = DateKit;
-console.log(DateKit.dateFormat('20200401', 'yyyy-MM-dd hh:mm:ss'));
-console.log(DateKit.dayOfMonth())
-console.log(DateKit.prevMonth())
+//Design.js
+var $design = {observer: function () {
+        if (new.target !== $design.observer) { return new $design.observer() }
+        const list = {};
+        this.on = function (type, fn) {
+            !list[type] && (list[type] = new Set());
+            list[type].add(fn)
+            return this;
+        }
+        this.emit = function (type, args, async = true) {
+            let event = { type: type, params: args }
+            run(() => { list[type] && list[type].forEach(fn => fn.call(undefined, event)) });
+            function run(callback) {
+                if (async) setTimeout(callback);
+                else callback();
+            }
+            return this;
+        }
+        this.off = function (type, fn) {
+            if (type) {
+                list[type] && (fn ? list[type].delete(fn) : delete list[type])
+            } else {
+                list = {};
+            }
+            return this
+        }
+    },state: function (states) {
+        if (new.target !== $design.state) { return new $design.state(states) }
+        let currentState = {};
+        let constrol = {
+            change(...args) {
+                let i = 0, len = args.length;
+                currentState = {};
+                for (; i < len; i++) {
+                    currentState[args[i]] = true;
+                }
+                return this;
+            },
+            run() {
+                for (let key in currentState) {
+                    states[key] && states[key]();
+                }
+                return this;
+            }
+
+        }
+        return constrol;
+
+    },command: function (command = {}) {
+        if (new.target !== $design.command) return new $design.command(command);
+        return {execute(args) {
+                if (Object.prototype.toString.call(args) === '[object Array]') {
+                    args.forEach(this.execute)
+                }
+                let cmd = args['cmd'],
+                    params = args['params'] || [];
+                if (!(params instanceof Array)) {
+                    params = [params];
+                }
+                return command && command[cmd] && command[cmd](...params);
+            }
+        }
+    },flyweight: function (logic = {}) {
+        if (new.target !== $design.flyweight) return new $design.flyweight(logic);
+        return {call(args) {
+                if (Object.prototype.toString.call(args) === '[object Array]') {
+                    args.forEach(this.call)
+                }
+                let share = args['share'],
+                    params = args['params'] || [];
+                return logic && logic[share] && logic[share](...params);
+            },add(obj) {
+                logic = { ...logic, ...obj };
+                return this;
+            }
+        }
+    },meno: function () {
+        if (new.target !== $design.meno) return new $design.meno();
+        this.cache = new Map();
+        this.add = function (key, value) {
+            this.cache.set(key, value);
+        }
+        this.get = function (key) {
+            return this.cache.get(key);
+        }
+        this.has = function (key) {
+            return this.cache.has(key);
+        }
+    },
+}
 //Dom.js
-var $dom= {
+var $dom = {
     copyText(dom) {
         return new Promise((resolve, reject) => {
             try {
@@ -241,14 +282,20 @@ var $dom= {
 //Encrypt.js
 
 
-var $encrypt = {idNum(val) {
+var $encrypt = {idnumber(val) {
         if (!val) return val;
         return val.toString().replace(/(\d{3})\d{11}(\d{4}|\d{3}[A-Z]{1})/, "$1" + "*".repeat(11) + "$2");
     }
 }
 //Form.js
 
-var FormKit_Operation = {
+var FormKit_Message = {
+    ['form-notExist']: 'The form doesn\'t exist',
+}
+
+
+var $form = {
+    ...FormKit_Message,
     getForm({ formSel, prefix } =ErrorKit.emptyParameterException()) {
         var form = document.querySelector(formSel);
         if (!form) return FormKit_Message['form-notExist'];
@@ -290,20 +337,6 @@ var FormKit_Operation = {
                 }, new FormData());
         }
     }
-
-}
-var FormKit_Verify = {
-
-}
-var FormKit_Message = {
-    ['form-notExist']: 'The form doesn\'t exist',
-}
-
-
-var $form = {
-    ...FormKit_Message,
-    ...FormKit_Verify,
-    ...FormKit_Operation,
 };
 //Http.js
 
@@ -360,37 +393,8 @@ var $http = {
     ...HttpKit_Uri,
 }
 
-//Judge.js
-
-var JudgeKit_Judge = {
-    void2empty(value) {
-        if (value == undefined) return '';
-        else return value;
-    },
-    allVoid2empty(value) {
-        if (value == undefined) return '';
-        else if (value === 'undefined') return '';
-        else if (value === 'null') return '';
-        else return value;
-    },
-    allVoid2bar(value) {
-        var value = this.allVoid2empty(value)
-        if (value === '') return '-';
-        else return value;
-    },
-}
-
-var $judge = {
-    ...JudgeKit_Judge,
-}
-
-
 //Math.js
-
-
-
-
-var MathKit_Compute = {
+var $math = {
     add(arg1, arg2) {
         let r1, r2, m;
         try {
@@ -478,11 +482,7 @@ var MathKit_Compute = {
         } else {
             throw new TypeError('hex type error! ' + hex)
         }
-    }
-}
-
-var $math = {
-    ...MathKit_Compute,toFixed(num, len) {
+    },toFixed(num, len) {
         num = num.toString();
         let index = num.indexOf('.');
         if (index !== -1) {
@@ -495,198 +495,69 @@ var $math = {
 }
 
 //Object.js
-var $object = {
-    deepCopy: function (obj) {
-        var o;
-        if (Object.prototype.toString.call(obj) === '[object Object]') {
-            o = {};
-            for (var key in obj) {
-                o[key] = this.deepCopy(obj[key]);
+var $targetect = {deepCopy: function (target) {
+        var copy;
+        if (toString.call(target) === '[object Object]') {
+            copy = {};
+            for (var key in target) {
+                copy[key] = this.deepCopy(target[key]);
             };
-        } else if (Object.prototype.toString.call(obj) === '[object Array]') {
-            o = [];
-            for (var [i, v] of obj.entries()) {
-                o[i] = this.deepCopy(obj[i]);
+        } else if (toString.call(target) === '[object Array]') {
+            copy = [];
+            for (var [i, v] of target.entries()) {
+                copy[i] = this.deepCopy(target[i]);
             }
         } else {
-            o = obj.valueOf();
+            copy = target.valueOf();
         }
-        return o;
-    },debounce: function (handle, delay = 400){
-        let timer = null,
-            cancel = null;
-        return async function (...args) {
-            return new Promise((resolve, reject) => {
-                if (timer) clearTimeout(timer)
-                if (cancel) cancel();
-                timer = setTimeout(() => {
-                    resolve(handle.apply(this, args));
-                    timer = null
-                }, delay)
-                cancel = () => {
-                    reject()
-                }
-            }).catch((err) => {
-                console.log("请勿频繁操作")
-            })
-        }
+        return copy;
     },
-    debounce(handler, delay = 400, immediate = true) {
-        let timer = null,
-            cancle;
-        return function (...args) {
-            return new Promise((resolve, reject) => {
-                let content = this;
-                if (timer) clearTimeout(timer);
-                if (cancle) cancle(timer);
-                if (immediate) {
-                    execute();
-                    immediate = false;
-                } else {
-                    timer = setTimeout(() => {
-                        execute();
-                    }, delay);
-                }
-                cancle = () => {
-                    reject("请勿频繁操作");
-                };
-                function execute() {
-                    let returned = handler.apply(content, args);
-                    if (Promise[Symbol.hasInstance](returned)) {
-                        returned.then((res) => {
-                            resolve(res);
-                        });
-                    } else {
-                        resolve(returned)
-                    }
-                }
-            });
-        }
-    },
-
-    throttle: function (handle, delay = 500, immediate = true){
-        let timer = null,
-            startTime = Date.parse(new Date()),
-            curTime,
-            remaining,
-            context;
-        return function (...args){
-            curTime = Date.parse(new Date());
-            remaining = delay - (curTime - startTime);
-            context = this;
-            clearTimeout(timer);
-            if (immediate) {
-                execute();
-                immediate = false;
-            } else {
-                if (remaining <= 0) {
-                    execute();
-                } else {
-                    timer = setTimeout(handle, remaining);
-                }
-            }
-            function execute() {
-                handle.apply(context, args);
-                startTime = Date.parse(new Date());
-            }
-        }
-    },Observer: function () {
-        const list = {};
-        this.on = function (type, fn) {
-            !list[type] && (list[type] = new Set());
-            list[type].add(fn)
-            return this;
-        }
-        this.emit = function (type, args, async = true) {
-            let event = { type: type, params: args }
-            run(() => { list[type] && list[type].forEach(fn => fn.call(undefined, event)) });
-            function run(callback) {
-                if (async) setTimeout(callback);
-                else callback();
-            }
-            return this;
-        }
-        this.off = function (type, fn) {
-            if (type) {
-                list[type] && (fn ? list[type].delete(fn) : delete list[type])
-            } else {
-                list = {};
-            }
-            return this
-        }
-    },StateModel: function (states) {
-        if (new.target !== ObjectKit.StateModel) { return new ObjectKit.StateModel(states) }
-        let currentState = {};
-        let constrol = {
-            change(...args) {
-                let i = 0, len = args.length;
-                currentState = {};
-                for (; i < len; i++) {
-                    currentState[args[i]] = true;
-                }
-                return this;
-            },
-            run() {
-                for (let key in currentState) {
-                    states[key] && states[key]();
-                }
-                return this;
-            }
-
-        }
-        return constrol;
-
-    },CommandModel: function (command = {}) {
-        if (new.target !== ObjectKit.CommandModel) return new ObjectKit.CommandModel(command);
-        return {execute(args) {
-                if (Object.prototype.toString.call(args) === '[object Array]') {
-                    args.forEach(this.execute)
-                }
-                let cmd = args['cmd'],
-                    params = args['params'] || [];
-                if (!(params instanceof Array)) {
-                    params = [params];
-                }
-                return command && command[cmd] && command[cmd](...params);
-            }
-        }
-    },Flyweight: function (logic = {}) {
-        if (new.target !== ObjectKit.Flyweight) return new ObjectKit.Flyweight(logic);
-        return {call(args) {
-                if (Object.prototype.toString.call(args) === '[object Array]') {
-                    args.forEach(this.call)
-                }
-                let share = args['share'],
-                    params = args['params'] || [];
-                return logic && logic[share] && logic[share](...params);
-            },add(obj) {
-                logic = { ...logic, ...obj };
-                return this;
-            }
-        }
-    },MemoModel: function () {
-        if (new.target !== ObjectKit.MemoModel) return new ObjectKit.MemoModel();
-        this.cache = new Map();
-        this.add = function (key, value) {
-            this.cache.set(key, value);
-        }
-        this.get = function (key) {
-            return this.cache.get(key);
-        }
-        this.has = function (key) {
-            return this.cache.has(key);
-        }
-    },afterPerform(callback, condition = function () { return true }, delay = 400) {
-        if (condition()) {
-            callback();
-        } else {
-            setTimeout(() => {
-                ObjectKit.afterPerform(callback, condition, delay)
-            }, delay)
-        }
-    }
 }
 
 
 
 
+//Tool.js
+var $tool = {debounce(handler, delay = 400, immediate = fasle) {
+        let timer = null, cancel;
+        return function (...args) {
+            let content = this;
+            if (timer) clearTimeout(timer);
+            return new Promise((resolve, reject) => {
+                if (immediate) immediate = true, execute();
+                else timer = setTimeout(execute, delay);
+                function execute() {
+                    if (cancel) cancel("请勿频繁操作");
+                    cancel = reject;
+                    resolve(handler.apply(content, args))
+                }
+            }).catch(console.warn);
+        }
+    },throttle(handler, delay = 400, immediate = fasle) {
+        let timer = null, cancel,
+            startTime = Date.parse(new Date()),
+        return function (...args) {
+            let context = this,
+                curTime = Date.parse(new Date()),
+                remaining = delay - (curTime - startTime);
+            if (timer) clearTimeout(timer);
+            return new Promise((resolve, reject) => {
+                if (immediate || remaining <= 0) execute();
+                else timer = setTimeout(handler, remaining);
+                function execute() {
+                    if (cancel) cancel('等待中');
+                    cancel = reject, startTime = Date.parse(new Date());
+                    resolve(handler.apply(context, args));
+                }
+            }).catch(console.warn)
+        }
+    },afterperform(callback, condition = function () { return true }, delay = 400) {
+        if (condition()) {
+            callback();
+        } else {
+            setTimeout(() => {
+                $object.afterperform(callback, condition, delay)
+            }, delay)
+        }
+    },
+}

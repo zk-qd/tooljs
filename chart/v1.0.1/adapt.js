@@ -2,7 +2,7 @@
  * @Author: zk 
  * @Date: 2021-01-14 10:02:15 
  * @Last Modified by: zk
- * @Last Modified time: 2021-01-26 18:14:54
+ * @Last Modified time: 2021-01-27 17:26:35
  */
 const { realpx, device } = $adaptive;
 /**
@@ -11,7 +11,7 @@ const { realpx, device } = $adaptive;
  */
 function resize(...params) {
     window.addEventListener('resize',
-        $object.throttle(() => params.forEach(item => item.resize()))
+        $tool.throttle(() => params.forEach(item => item.resize()))
     );
 };
 // echart中如果没有写字体大小，官方会默认就是12px

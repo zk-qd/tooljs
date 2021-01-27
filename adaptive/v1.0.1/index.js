@@ -2,7 +2,7 @@
  * @Author: zk 
  * @Date: 2021-01-26 14:08:16 
  * @Last Modified by: zk
- * @Last Modified time: 2021-01-26 18:13:35
+ * @Last Modified time: 2021-01-27 17:26:54
  */
 /**
  * TODO 依赖
@@ -154,7 +154,7 @@
     function resize() {
         const docEl = document.documentElement;
         setRemUnit(), window.addEventListener('resize',
-            $object.throttle(setRemUnit, 400),
+            $tool.throttle(setRemUnit, 400),
             {
                 once: false,
                 passive: true,

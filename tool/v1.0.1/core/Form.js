@@ -1,5 +1,12 @@
-// operation
-var FormKit_Operation = {
+
+// message
+var FormKit_Message = {
+    ['form-notExist']: 'The form doesn\'t exist',
+}
+
+
+var $form = {
+    ...FormKit_Message,
     // get form data
     getForm({ formSel, prefix } = /* 依赖error */ErrorKit.emptyParameterException()) {
         var form = document.querySelector(formSel);
@@ -51,20 +58,4 @@ var FormKit_Operation = {
                 }, new FormData());
         }
     }
-
-}
-// verify 
-var FormKit_Verify = {
-
-}
-// message
-var FormKit_Message = {
-    ['form-notExist']: 'The form doesn\'t exist',
-}
-
-
-var $form = {
-    ...FormKit_Message,
-    ...FormKit_Verify,
-    ...FormKit_Operation,
 };

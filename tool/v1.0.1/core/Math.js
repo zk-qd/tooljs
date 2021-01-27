@@ -1,8 +1,4 @@
-
-
-
-
-var MathKit_Compute = {
+var $math = {
     // 加
     add(arg1, arg2) {
         let r1, r2, m;
@@ -100,11 +96,7 @@ var MathKit_Compute = {
         } else {
             throw new TypeError('hex type error! ' + hex)
         }
-    }
-}
-
-var $math = {
-    ...MathKit_Compute,
+    },
     /**
      * @description 截取指定位数的小数点
      * @param {Number} num 小数

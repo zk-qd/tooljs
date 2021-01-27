@@ -1,4 +1,4 @@
-var $dom= {
+var $dom = {
     // 复制元素文本
     copyText(dom) {
         return new Promise((resolve, reject) => {
