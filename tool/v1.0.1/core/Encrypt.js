@@ -1,6 +1,6 @@
 
-
-var $encrypt = {
+// 加密相关类
+window.$encrypt = {
     /**
      * @param {String} val 身份证号码
      * @returns {String} 

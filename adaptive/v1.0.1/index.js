@@ -2,7 +2,7 @@
  * @Author: zk 
  * @Date: 2021-01-26 14:08:16 
  * @Last Modified by: zk
- * @Last Modified time: 2021-01-27 17:26:54
+ * @Last Modified time: 2021-02-01 18:41:57
  */
 /**
  * TODO 依赖
@@ -12,7 +12,7 @@
     "use strict";
     if (typeof module === "object" && typeof module.exports === "object") {
         module.exports = global.document
-            ? $adaptive = factory(global)
+            ? window.$adaptive = factory(global)
             : factory(global);
     } else {
         $adaptive = factory(global);
@@ -212,10 +212,10 @@
     }
     return {
         // 方法
+        device,
         pxtorem,
         realpx,
         adapt,
-        device,
         // 属性
         /* PC_NORMAL_WIDTH,
         PC_NORMAL_SIZE,

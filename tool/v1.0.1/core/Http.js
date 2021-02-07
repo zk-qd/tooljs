@@ -53,7 +53,7 @@ var HttpKit_Uri = {
     }
 }
 
-var $http = {
+window.$http = {
     ...HttpKit_Judge,
     ...HttpKit_Uri,
 }

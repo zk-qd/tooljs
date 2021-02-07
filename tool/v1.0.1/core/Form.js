@@ -5,7 +5,7 @@ var FormKit_Message = {
 }
 
 
-var $form = {
+window.$form = {
     ...FormKit_Message,
     // get form data
     getForm({ formSel, prefix } = /* 依赖error */ErrorKit.emptyParameterException()) {

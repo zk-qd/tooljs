@@ -1,4 +1,6 @@
-var $math = {
+
+// 数学相关类
+window.$math = {
     // 加
     add(arg1, arg2) {
         let r1, r2, m;

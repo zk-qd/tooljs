@@ -1,7 +1,6 @@
 //Array.js
 
-
-var $array = {sort(target, type = 'up', key) {
+window.$array = {sort(target, type = 'up', key) {
         target.sort((value1, value2) => {
             if (type == 'down') [value2, value1] = [value1, value2]
             if (key) {
@@ -10,23 +9,31 @@ var $array = {sort(target, type = 'up', key) {
                 return value1.localeCompare(value2);
             }
         });
-    },
+    },withinScope(scope, target, right = true, left = true) {
+        if (!scope) return false;
+        target = Number(target);
+        let [first, last] = scope, result;
+        if (right && left) result = first <= target && target <= last;
+        else if (!right && left) result = first <= target && target < last;
+        else if (right && !left) result = first < target && target <= last;
+        else if (!right && !left) result = first < target && target < last;
+        return result;
+    }
+
 }
 
 //Date.js
 
-const DateKit_Schema = {
-    parseSerialDate(val) {
-        return new Date(val.replace(/(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})/, '$<year>/$<month>/$<day>'));
-    }
-}
-var $date = {
-    ...DateKit_Schema,format: function (date, format = 'yyyy-MM-dd', dt = true) {
-        if (!date && dt) date = new Date();
-        else if (!date && !dt) return '';
 
-        else if (date.toString().length == 8) date = this.parseSerialDate(date);
-        else date = new Date(date);
+function adaptDate(date) {
+    if (!date) date = new Date();
+    else if (date.toString().length == 8) date = new Date(date.replace(/(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})/, '$<year>/$<month>/$<day>'));
+    else date = new Date(date);
+    return date;
+}
+window.$date = {
+    ...DateKit_Schema,format(date, format = 'yyyy-MM-dd') {
+        date = adaptDate(date);
         const list = [
             { match: 'yyyy', val: date.getFullYear() },
             { match: 'MM', val: fillZore(date.getMonth() + 1) },
@@ -70,42 +77,17 @@ var $date = {
         function fillZore(value) {
             return value.toString().padStart(2, '0')
         }
-    },dayOfMonth:function (date) {
-        if (date) {
-            date = new Date(date);
-        } else {
-            date = new Date();
-        }
+    },days(date) {
+        date = adaptDate(date);
         let year = date.getFullYear(),
             month = date.getMonth();
         return new Date(year, month + 1, 0).getDate();
-    },
-    prevMonth:function (date) {
-        if (date) date = new Date(date);
-        else date = new Date();
-        let month = date.getMonth(),
-            year = date.getFullYear();
-        return new Date(year, month - 1, 1);
-    },
-    currentMonth:function () {
-        return new Date();
-    },
-    nextMonth:function (date) {
-        if (date) date = new Date(date);
-        else date = new Date();
-        let month = date.getMonth(),
-            year = date.getFullYear();
-        return new Date(year, month + 1, 1);
-    },
-    timeAndDate:function (time, date) {
-        if (time) time = new Date(time);
-        else time = new Date();
-        if (date) date = new Date(date);
-        else date = new Date();
+    },datetime(date, time) {
+        date = adaptDate(date);
+        time = adaptDate(time);
         return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
-    },intervalOfDate: function (type, date) {
-        if (date) date = new Date(date);
-        else date = new Date();
+    },interval: function (date, type = 'day') {
+        date = adaptDate(date);
         let year = date.getFullYear(),
             month = date.getMonth(),
             day = date.getDate(),
@@ -139,34 +121,87 @@ var $date = {
                     end: new Date(year, month, day, hour, minute, 59),
                 };
         }
-    },distanceDate: function (day = 0, h = new Date().getHours()) {
+    },distance(count = 0, type = 'day') {
+        let year = date.getFullYear(),
+            month = date.getMonth(),
+            day = date.getDate(),
+            hour = date.getHours(),
+            minute = date.getMinutes(),
+            second = date.getSeconds();
+        const states = {
+            year: () => {
+                return new Date(year + count, month, day);
+            },
+            month: () => {
+                return new Date(year, month + count, day);
+            },
+            day: () => {
+                return new Date(year, month, day + count);
+            },
+        }
+        return states[type];
+    },currents(type = 30) {
+        let date = new Date(),
+            year = date.getFullYear(),
+            month = date.getMonth(),
+        const state = {
+            _12() {
+                return '.'.repeat(11).split('.').map((item, index) =>
+                    $date.format(new Date(year, index + 1), 'yyyy-MM'));
+            },
+            _30() {
+                return '.'.repeat($date.days(date) - 1).split('.').map((item, index) =>
+                    $date.format(new Date(year, month, index + 1), 'yyyy-MM-dd')
+                )
+            },
+            _24() {
+                return '.'.repeat(23).split('.').map((item, index) => index.toString().padStart(2, '0') + ':00')
+            },
+            _48() {
+                return this._24().flatMap(item => [item, item.replace(/:00/, ':30')]);
+            }
+        }
+        return state['_' + type];
+    },recents(sum, type = 'day', format) {
         let current = new Date(),
-            date = new Date(current.getFullYear(), current.getMonth(), current.getDate(), h);
-        return new Date(date.getTime() + 24 * 3600 * 1000 * day)
-    },get24Hour() {
-        return '.'.repeat(23).split('.').map((item, index) => index.toString().padStart(2, '0') + ':00')
-    },get48Hour() {
-        return DateKit.get24Hour().map(item => [item, item.replace(/:00/, ':30')]).flat(1);
-    },get30Date(date, format = 'yyyy-MM-dd') {
-        let { end } = DateKit.intervalOfDate('month', date),
-            year = end.getFullYear(),
-            month = end.getMonth();
-        return '.'.repeat(end.getDate() - 1).split('.').map((item, index) => {
-            return DateKit.format(new Date(year, month, index + 1), format)
-        })
-
-    },get12Month(date, format = "yyyy-MM") {
-        let year;
-        date = date ? new Date(date) : new Date();
-        year = date.getFullYear();
-        return '.'.repeat(11).split('.').map((item, index) => {
-            return DateKit.format(new Date(year, index), format);
-        })
+            year = current.getFullYear(),
+            month = current.getMonth(),
+            day = current.getDate(),
+            recents = [];
+        const states = {
+            year: (i) => {
+                return $date.format(new Date(year - i, month, day), format || "yyyy");
+            },
+            month: (i) => {
+                return $date.format(new Date(year, month - i, day), format || 'yyyy-MM');
+            },
+            day: (i) => {
+                return $date.format(new Date(year, month, day - i), format || "yyyy-MM-dd");
+            },
+        }
+        let state = states[type];
+        for (let i; i <= sum; i++) recents.push(state(i));
+        return recents;
+    },realtime() {
+        let year = date.getFullYear(),
+            month = date.getMonth(),
+            day = date.getDate(),
+            hour = date.getHours(),
+            minute = date.getMinutes(),
+            second = date.getSeconds();
+        return {
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+        }
     }
-
 }
 //Design.js
-var $design = {observer: function () {
+
+window.$design = {observer: function () {
         if (new.target !== $design.observer) { return new $design.observer() }
         const list = {};
         this.on = function (type, fn) {
@@ -256,7 +291,8 @@ var $design = {observer: function () {
     },
 }
 //Dom.js
-var $dom = {
+
+window.$dom = {
     copyText(dom) {
         return new Promise((resolve, reject) => {
             try {
@@ -277,12 +313,36 @@ var $dom = {
                 reject(e);
             }
         })
-    }
+    },adaptImgCover({
+        width,
+        height,
+        url,
+    }) {
+        return new Promise((resolve, reject) => {
+            let img = new Image();
+            img.src = url;
+            img.onload = function () {
+                resolve(adapt(img));
+            }
+            img.onerror = reject;
+        })
+        function adapt(img) {
+            let w = img.width,
+                h = img.height,
+                zoomW = width,
+                zoomH = h * width / w;
+            if (zoomH < height) zoomH = height;
+            img.width = zoomW;
+            img.height = zoomH;
+            return img;
+        }
+    },
+    
+
 }
 //Encrypt.js
 
-
-var $encrypt = {idnumber(val) {
+window.$encrypt = {idnumber(val) {
         if (!val) return val;
         return val.toString().replace(/(\d{3})\d{11}(\d{4}|\d{3}[A-Z]{1})/, "$1" + "*".repeat(11) + "$2");
     }
@@ -294,7 +354,7 @@ var FormKit_Message = {
 }
 
 
-var $form = {
+window.$form = {
     ...FormKit_Message,
     getForm({ formSel, prefix } =ErrorKit.emptyParameterException()) {
         var form = document.querySelector(formSel);
@@ -388,13 +448,14 @@ var HttpKit_Uri = {
     }
 }
 
-var $http = {
+window.$http = {
     ...HttpKit_Judge,
     ...HttpKit_Uri,
 }
 
 //Math.js
-var $math = {
+
+window.$math = {
     add(arg1, arg2) {
         let r1, r2, m;
         try {
@@ -495,7 +556,8 @@ var $math = {
 }
 
 //Object.js
-var $targetect = {deepCopy: function (target) {
+
+window.$object = {deepCopy: function (target) {
         var copy;
         if (toString.call(target) === '[object Object]') {
             copy = {};
@@ -511,14 +573,45 @@ var $targetect = {deepCopy: function (target) {
             copy = target.valueOf();
         }
         return copy;
-    },
+    },mixin(...mixins) {
+        class Mix {
+            constructor() {
+                for (let mixin of mixins) {
+                    copyProperties(this, new mixin());
+                }
+            }
+        }
+        for (let mixin of mixins) {
+            copyProperties(Mix, mixin);
+            copyProperties(Mix.prototype, mixin.prototype);
+        }
+        function copyProperties(target, source) {
+            for (let key of Reflect.ownKeys(source)) {
+                if (key !== 'constructor'
+                    && key !== 'prototype'
+                    && !(key === 'name' && typeof source === 'function')
+                    && !(key === 'length' && typeof source === 'function')
+                ) {
+                    let desc = Object.getOwnPropertyDescriptor(source, key);
+                    Object.defineProperty(target, key, desc);
+                }
+            }
+        }
+        return Mix;
+    },valueAt(target, propstring) {
+        let propArray = propstring.split('.');
+        return propArray.reduce((object, prop) => {
+            return object[prop]
+        }, target);
+    }
 }
 
 
 
 
 //Tool.js
-var $tool = {debounce(handler, delay = 400, immediate = fasle) {
+
+window.$tool = {debounce(handler, delay = 400, immediate = false) {
         let timer = null, cancel;
         return function (...args) {
             let content = this;
@@ -533,9 +626,9 @@ var $tool = {debounce(handler, delay = 400, immediate = fasle) {
                 }
             }).catch(console.warn);
         }
-    },throttle(handler, delay = 400, immediate = fasle) {
+    },throttle(handler, delay = 400, immediate = false) {
         let timer = null, cancel,
-            startTime = Date.parse(new Date()),
+            startTime = Date.parse(new Date());
         return function (...args) {
             let context = this,
                 curTime = Date.parse(new Date()),
@@ -559,5 +652,38 @@ var $tool = {debounce(handler, delay = 400, immediate = fasle) {
                 $object.afterperform(callback, condition, delay)
             }, delay)
         }
-    },
+    },fileInfo(url) {
+        if (!/\./.test(url)) throw new TypeError('文件地址错误:没有后缀名');
+        let type,
+            suffix,
+            name,
+            map;
+        ([suffix, ...name] = url.split('.').reverse());
+        name = name.join('.');
+        map = new Map([
+            ['.jpg, .jpeg, .png, .gif', 'image'],
+            ['视频后缀', 'video'],
+            ['音频后缀', 'audio'],
+            ['.pdf', 'pdf'],
+            ['.xlxs, .xls', 'excel'],
+            ['.word', 'word']
+        ])
+        for (let [key, value] of map) {
+            if (new RegExp(suffix).test(key)) {
+                type = value;
+                break;
+            }
+        }
+        return {
+            url,
+            suffix,
+            name,
+            type,
+        }
+    }
+}
+//Validate.js
+
+window.$validate = {
+    
 }

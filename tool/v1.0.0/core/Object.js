@@ -166,7 +166,7 @@ window.ObjectKit = {
      *  */
     StateModel: function (states) {
         // 安全模式
-        if (new.target !== ObjectKit.StateModel) { return new ObjectKit.StateModel(states) }
+        if (new.target !== $design.state) { return new $design.state(states) }
         let currentState = {};
         // 控制类
         let constrol = {
@@ -201,7 +201,7 @@ window.ObjectKit = {
      * commandModel.execute([{cmd: 'fn1',params: []])
      * */
     CommandModel: function (command = {}) {
-        if (new.target !== ObjectKit.CommandModel) return new ObjectKit.CommandModel(command);
+        if (new.target !== $design.command) return new $design.command(command);
         return {  
             /** 
              * *执行命令方法 

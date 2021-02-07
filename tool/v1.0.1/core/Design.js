@@ -1,4 +1,6 @@
-var $design = {
+
+// 设计类
+window.$design = {
     /**
     * *观察者 
     * todo observer = new observer();

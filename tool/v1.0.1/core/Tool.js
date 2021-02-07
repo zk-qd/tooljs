@@ -1,4 +1,6 @@
-var $tool = {
+
+// 工具类
+window.$tool = {
     /**
      * @description 防抖动，
      * @param {Function} handler 执行函数 
@@ -9,7 +11,7 @@ var $tool = {
      * @todo 主要作用：短时间内多次触发限制只执行一次
      * @todo 缺点：反应时间延长
      */
-    debounce(handler, delay = 400, immediate = fasle) {
+    debounce(handler, delay = 400, immediate = false) {
         let timer = null, cancel;
         return function (...args) { // 这里不要用箭头函数
             let content = this;
@@ -34,9 +36,9 @@ var $tool = {
      * @todo 应用场景：海量点
      * @todo 主要作用：短时间内多次触发减少请求次数，并且缩短反应时间
     */
-    throttle(handler, delay = 400, immediate = fasle) {
+    throttle(handler, delay = 400, immediate = false) {
         let timer = null, cancel,
-            startTime = Date.parse(new Date()),// 初始化一个开始时间
+            startTime = Date.parse(new Date());// 初始化一个开始时间
         return function (...args) {
             let context = this,
                 curTime = Date.parse(new Date()),
@@ -69,4 +71,39 @@ var $tool = {
             }, delay)
         }
     },
+    /**
+     * @description 通过文件地址获取文件类型
+     * @param {string} url 文件地址
+     * @return {object} 文件相关信息
+     * @todo 
+     */
+    fileInfo(url) {
+        if (!/\./.test(url)) throw new TypeError('文件地址错误:没有后缀名');
+        let type,
+            suffix,
+            name,
+            map;
+        ([suffix, ...name] = url.split('.').reverse());
+        name = name.join('.');
+        map = new Map([
+            ['.jpg, .jpeg, .png, .gif', 'image'],
+            ['视频后缀', 'video'],
+            ['音频后缀', 'audio'],
+            ['.pdf', 'pdf'],
+            ['.xlxs, .xls', 'excel'],
+            ['.word', 'word']
+        ])
+        for (let [key, value] of map) {
+            if (new RegExp(suffix).test(key)) {
+                type = value;
+                break;
+            }
+        }
+        return {
+            url, // 文件地址
+            suffix, // 文件后缀
+            name, // 文件名称
+            type, // 文件类型
+        }
+    }
 }

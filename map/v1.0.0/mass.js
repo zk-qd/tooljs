@@ -42,8 +42,8 @@ const MASS = {
     init() {
         this.bind();
         // 防抖动
-        this.request = ObjectKit.debounce(this.request, 400, true);
-        this.requestDetail = ObjectKit.debounce(this.requestDetail, 400, true);
+        this.request = $tool.debounce(this.request, 400, true);
+        this.requestDetail = $tool.debounce(this.requestDetail, 400, true);
       
         setTimeout(() => {
             this.DatasetInterval();
