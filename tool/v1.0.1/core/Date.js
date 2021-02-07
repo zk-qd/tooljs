@@ -9,7 +9,6 @@ function adaptDate(date) {
 
 // 时间操作相关类
 window.$date = {
-    ...DateKit_Schema,
     /**
      * @description 格式化时间
      * @param {Any} date 任意能够转时间的数据
@@ -172,7 +171,7 @@ window.$date = {
     currents(type = 30) {
         let date = new Date(),
             year = date.getFullYear(),
-            month = date.getMonth(),
+            month = date.getMonth();
         const state = {
             _12() { // 12个月
                 return '.'.repeat(11).split('.').map((item, index) =>

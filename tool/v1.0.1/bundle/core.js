@@ -1,6 +1,7 @@
 //Array.js
 
-window.$array = {sort(target, type = 'up', key) {
+window.$array = {
+    sort(target, type = 'up', key) {
         target.sort((value1, value2) => {
             if (type == 'down') [value2, value1] = [value1, value2]
             if (key) {
@@ -9,7 +10,7 @@ window.$array = {sort(target, type = 'up', key) {
                 return value1.localeCompare(value2);
             }
         });
-    },withinScope(scope, target, right = true, left = true) {
+    }, withinScope(scope, target, right = true, left = true) {
         if (!scope) return false;
         target = Number(target);
         let [first, last] = scope, result;
@@ -32,7 +33,7 @@ function adaptDate(date) {
     return date;
 }
 window.$date = {
-    ...DateKit_Schema,format(date, format = 'yyyy-MM-dd') {
+    format(date, format = 'yyyy-MM-dd') {
         date = adaptDate(date);
         const list = [
             { match: 'yyyy', val: date.getFullYear() },
@@ -77,16 +78,16 @@ window.$date = {
         function fillZore(value) {
             return value.toString().padStart(2, '0')
         }
-    },days(date) {
+    }, days(date) {
         date = adaptDate(date);
         let year = date.getFullYear(),
             month = date.getMonth();
         return new Date(year, month + 1, 0).getDate();
-    },datetime(date, time) {
+    }, datetime(date, time) {
         date = adaptDate(date);
         time = adaptDate(time);
         return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
-    },interval: function (date, type = 'day') {
+    }, interval: function (date, type = 'day') {
         date = adaptDate(date);
         let year = date.getFullYear(),
             month = date.getMonth(),
@@ -121,7 +122,7 @@ window.$date = {
                     end: new Date(year, month, day, hour, minute, 59),
                 };
         }
-    },distance(count = 0, type = 'day') {
+    }, distance(count = 0, type = 'day') {
         let year = date.getFullYear(),
             month = date.getMonth(),
             day = date.getDate(),
@@ -140,10 +141,10 @@ window.$date = {
             },
         }
         return states[type];
-    },currents(type = 30) {
+    }, currents(type = 30) {
         let date = new Date(),
             year = date.getFullYear(),
-            month = date.getMonth(),
+            month = date.getMonth();
         const state = {
             _12() {
                 return '.'.repeat(11).split('.').map((item, index) =>
@@ -162,7 +163,7 @@ window.$date = {
             }
         }
         return state['_' + type];
-    },recents(sum, type = 'day', format) {
+    }, recents(sum, type = 'day', format) {
         let current = new Date(),
             year = current.getFullYear(),
             month = current.getMonth(),
@@ -182,7 +183,7 @@ window.$date = {
         let state = states[type];
         for (let i; i <= sum; i++) recents.push(state(i));
         return recents;
-    },realtime() {
+    }, realtime() {
         let year = date.getFullYear(),
             month = date.getMonth(),
             day = date.getDate(),
@@ -201,7 +202,8 @@ window.$date = {
 }
 //Design.js
 
-window.$design = {observer: function () {
+window.$design = {
+    observer: function () {
         if (new.target !== $design.observer) { return new $design.observer() }
         const list = {};
         this.on = function (type, fn) {
@@ -226,7 +228,7 @@ window.$design = {observer: function () {
             }
             return this
         }
-    },state: function (states) {
+    }, state: function (states) {
         if (new.target !== $design.state) { return new $design.state(states) }
         let currentState = {};
         let constrol = {
@@ -248,9 +250,10 @@ window.$design = {observer: function () {
         }
         return constrol;
 
-    },command: function (command = {}) {
+    }, command: function (command = {}) {
         if (new.target !== $design.command) return new $design.command(command);
-        return {execute(args) {
+        return {
+            execute(args) {
                 if (Object.prototype.toString.call(args) === '[object Array]') {
                     args.forEach(this.execute)
                 }
@@ -262,21 +265,22 @@ window.$design = {observer: function () {
                 return command && command[cmd] && command[cmd](...params);
             }
         }
-    },flyweight: function (logic = {}) {
+    }, flyweight: function (logic = {}) {
         if (new.target !== $design.flyweight) return new $design.flyweight(logic);
-        return {call(args) {
+        return {
+            call(args) {
                 if (Object.prototype.toString.call(args) === '[object Array]') {
                     args.forEach(this.call)
                 }
                 let share = args['share'],
                     params = args['params'] || [];
                 return logic && logic[share] && logic[share](...params);
-            },add(obj) {
+            }, add(obj) {
                 logic = { ...logic, ...obj };
                 return this;
             }
         }
-    },meno: function () {
+    }, meno: function () {
         if (new.target !== $design.meno) return new $design.meno();
         this.cache = new Map();
         this.add = function (key, value) {
@@ -313,7 +317,7 @@ window.$dom = {
                 reject(e);
             }
         })
-    },adaptImgCover({
+    }, adaptImgCover({
         width,
         height,
         url,
@@ -337,12 +341,13 @@ window.$dom = {
             return img;
         }
     },
-    
+
 
 }
 //Encrypt.js
 
-window.$encrypt = {idnumber(val) {
+window.$encrypt = {
+    idnumber(val) {
         if (!val) return val;
         return val.toString().replace(/(\d{3})\d{11}(\d{4}|\d{3}[A-Z]{1})/, "$1" + "*".repeat(11) + "$2");
     }
@@ -356,7 +361,7 @@ var FormKit_Message = {
 
 window.$form = {
     ...FormKit_Message,
-    getForm({ formSel, prefix } =ErrorKit.emptyParameterException()) {
+    getForm({ formSel, prefix } = ErrorKit.emptyParameterException()) {
         var form = document.querySelector(formSel);
         if (!form) return FormKit_Message['form-notExist'];
         var data = form.serializeArray();
@@ -373,7 +378,7 @@ window.$form = {
         }
         return data;
     },
-    setForm({ formSel, prefix, params } =ErrorKit.emptyParameterException()) {
+    setForm({ formSel, prefix, params } = ErrorKit.emptyParameterException()) {
         const form = document.querySelector(formSel);
         if (!form) return FormKit_Message['form-notExist'];
         let ele;
@@ -382,7 +387,7 @@ window.$form = {
             else ele = form.querySelector('[name=' + key + ']');
             if (ele) ele.value = params[key];
         }
-    },toFormData(data) {
+    }, toFormData(data) {
         let type = Object.prototype.toString.call(data);
         switch (type) {
             case "[object Object]":
@@ -543,7 +548,7 @@ window.$math = {
         } else {
             throw new TypeError('hex type error! ' + hex)
         }
-    },toFixed(num, len) {
+    }, toFixed(num, len) {
         num = num.toString();
         let index = num.indexOf('.');
         if (index !== -1) {
@@ -557,7 +562,8 @@ window.$math = {
 
 //Object.js
 
-window.$object = {deepCopy: function (target) {
+window.$object = {
+    deepCopy: function (target) {
         var copy;
         if (toString.call(target) === '[object Object]') {
             copy = {};
@@ -573,7 +579,7 @@ window.$object = {deepCopy: function (target) {
             copy = target.valueOf();
         }
         return copy;
-    },mixin(...mixins) {
+    }, mixin(...mixins) {
         class Mix {
             constructor() {
                 for (let mixin of mixins) {
@@ -598,7 +604,7 @@ window.$object = {deepCopy: function (target) {
             }
         }
         return Mix;
-    },valueAt(target, propstring) {
+    }, valueAt(target, propstring) {
         let propArray = propstring.split('.');
         return propArray.reduce((object, prop) => {
             return object[prop]
@@ -611,7 +617,8 @@ window.$object = {deepCopy: function (target) {
 
 //Tool.js
 
-window.$tool = {debounce(handler, delay = 400, immediate = false) {
+window.$tool = {
+    debounce(handler, delay = 400, immediate = false) {
         let timer = null, cancel;
         return function (...args) {
             let content = this;
@@ -626,7 +633,7 @@ window.$tool = {debounce(handler, delay = 400, immediate = false) {
                 }
             }).catch(console.warn);
         }
-    },throttle(handler, delay = 400, immediate = false) {
+    }, throttle(handler, delay = 400, immediate = false) {
         let timer = null, cancel,
             startTime = Date.parse(new Date());
         return function (...args) {
@@ -644,7 +651,7 @@ window.$tool = {debounce(handler, delay = 400, immediate = false) {
                 }
             }).catch(console.warn)
         }
-    },afterperform(callback, condition = function () { return true }, delay = 400) {
+    }, afterperform(callback, condition = function () { return true }, delay = 400) {
         if (condition()) {
             callback();
         } else {
@@ -652,7 +659,7 @@ window.$tool = {debounce(handler, delay = 400, immediate = false) {
                 $object.afterperform(callback, condition, delay)
             }, delay)
         }
-    },fileInfo(url) {
+    }, fileInfo(url) {
         if (!/\./.test(url)) throw new TypeError('文件地址错误:没有后缀名');
         let type,
             suffix,
@@ -685,5 +692,5 @@ window.$tool = {debounce(handler, delay = 400, immediate = false) {
 //Validate.js
 
 window.$validate = {
-    
+
 }
