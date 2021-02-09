@@ -1,0 +1,82 @@
+.amap-marker {
+
+  // 弹窗
+  .marker-window__station {
+    border: 1px solid #a2a2a2;
+    position: relative;
+    width: 280px;
+    font-size: 14px;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0px 1px 2px #f0f0f0;
+    // padding: 5px 10px;
+    transform: translate(-50%, -100%);
+    top: -10px;
+    left: 50px;
+
+    .header {
+      border-bottom: 1px solid #d3d3d3;
+      font-weight: 600;
+      padding: 0 10px;
+      position: relative;
+
+      >li {
+        line-height: 30px;
+      }
+
+      .close {
+        content: "x";
+        position: absolute;
+        top: 2px;
+        right: 10px;
+      }
+    }
+
+    .body {
+      padding: 10px 10px;
+      color: #000000;
+
+      >li {
+        line-height: 25px;
+
+        >em {
+          color: #515a6e;
+        }
+
+        >span {
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .footer {
+      margin: 0px 10px 5px;
+      background-color: #eaf2ff;
+      line-height: 25px;
+
+      >li {
+
+        /*  color: #7abcf3;
+      &:nth-last-child() {
+        color: ;
+      } */
+        >span {
+          margin: 5px;
+        }
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 40%) skewX(-45deg) skewY(-45deg) rotateZ(90deg);
+      border: 10px solid white;
+      border-top-color: transparent;
+      border-left-color: transparent;
+      box-sizing: border-box;
+      box-shadow: 2px 2px 0px 1px #adadad;
+    }
+  }
+}

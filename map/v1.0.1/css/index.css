@@ -1,4 +1,3 @@
-@import "./reset/index.css";
-@import "./dialog/index.css";
-@import "./marker/content.css";
-@import "./marker/name.css";
+@import "./reset/index.css"; /* 重置 */
+@import "./dialog/index.css"; /* element-dialog */
+@import "./marker/index.css"; /* 点标记相关 */

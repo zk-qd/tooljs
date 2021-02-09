@@ -3,6 +3,7 @@ export default class Context {
     static MODE = 'lazy' // 加载模式 'lazy' or 'hungry' 默认 lazy 作用是加快地图显示，之后的性能可能用的更多
     // 中心点
     static CENTER(type) {
+        
         const center = {
             default: null,
             长沙县: [113.08081, 28.24615],

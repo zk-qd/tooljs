@@ -1,5 +1,13 @@
 // 覆盖物类
-
+/**
+ * zIndex： 
+ * 图层100-200
+ * 多边形200-300
+ * 连线300-400
+ * 点标记 400-500
+ * 弹窗900-1000
+ * 
+ */
 export default class Overlay {
     /**
    * 创建点标记
@@ -7,6 +15,9 @@ export default class Overlay {
    * kmap.createMarker({...KMap.MARKER_SIZE('position'),image: KMap.MARKER_IMAGE('default')})
    * 扩展需要在size和image中添加，
    */
+    overlay(type, ...args) {
+        return this['create' + type](...args);
+    }
     createMarker(options) {
         let size = KMap.MARKER_SIZE('position');
         let w = options.width || size.width;
@@ -15,10 +26,12 @@ export default class Overlay {
         let default_options = {
             offset: this.createPixel(-w / 2, -h),
             icon: this.createIcon({
-                image: image,
-                imageSize: this.createSize(w, h),
-                size: this.createSize(w, h)
-            })
+                image: image, // 图片
+                imageSize: this.createSize(w, h), // 背景图片大小
+                size: this.createSize(w, h), // 容器大小
+                // imageOffset: sprite图
+            }),
+            zIndex: 400,
         };
         return new KMap.AMap.Marker(Object.assign(default_options, options));
     }
@@ -125,7 +138,7 @@ export default class Overlay {
      * !因此定位的话，是直接通过内容div定位的 
      *  */
     createMarkerContent(options) {
-        return new KMap.AMap.Marker(options);
+        return new KMap.AMap.Marker({ zIndex: 900, ...options });
     }
     createMarkerContentFactory(type, options = {}) {
         let contents = KMap.MARKER_CONTENT[type];
@@ -144,7 +157,7 @@ export default class Overlay {
             ...KMap.POLYLINE('default'),
             lineJoin: 'round',
             lineCap: 'round',
-            zIndex: -1,
+            zIndex: 300,
             showDir: true, // 折线方向
             dirColor: 'white',
             ...options,
@@ -152,13 +165,7 @@ export default class Overlay {
         return new KMap.AMap.Polyline(default_options);
     }
     createLineFactory(type = 'default', options = {}) {
-        let default_options = {
-            lineJoin: 'round',
-            lineCap: 'round',
-            zIndex: -1,
-            showDir: true, // 折线方向
-            dirColor: 'white',
-        }
+        let default_options = {};
         switch (type) {
             case 'default':
                 Object.assign(default_options, {
@@ -177,15 +184,13 @@ export default class Overlay {
     createPolygon(options = {}) {
         let default_options = {
             ...KMap.POLYGON('default'),
-            zIndex: 333,
+            zIndex: 200,
             ...options,
         }
         return new KMap.AMap.Polygon({ ...default_options, ...options });
     }
     createPolygonFactory(type = 'default', options = {}) {
-        let default_options = {
-            zIndex: 333,
-        }
+        let default_options = {}
         switch (type) {
             case 'default':
                 Object.assign(default_options, {
@@ -206,14 +211,12 @@ export default class Overlay {
         let default_options = {
             // center: [],
             // radius: 1000, 
-            zIndex: 50,
+            zIndex: 200,
         }
         return new KMap.AMap.Circle({ ...default_options, ...options });
     }
     createCircleFactory(type = 'default', options = {}) {
-        let default_options = {
-            zIndex: 50,
-        }
+        let default_options = {}
         switch (type) {
             case 'default':
                 Object.assign(default_options, {
@@ -238,7 +241,7 @@ export default class Overlay {
     createMassMarker(options = {}) {
         let default_options = {
             opacity: 0.9,
-            zIndex: 123,
+            zIndex: 400,
             cursor: "pointer",
             alwaysRender: true,// 表示是否在拖拽缩放过程中实时重绘，默认true，建议超过10000的时候设置false
             style: KMap.MASS_STYLE('default'),
@@ -271,7 +274,7 @@ export default class Overlay {
             autoRotation: true,
             content: KMap.MARKER_CONTENT('cluster')[0],// offset: new AMap.Pixel(-8, -13),
             // zooms: [3, 13], //点聚合 zooms是无效的
-            zIndex: 980,
+            zIndex: 400,
             ...options,
         }
         let createMarker = data => {
@@ -280,7 +283,7 @@ export default class Overlay {
                 ...default_options,
             }));
         },
-            cluster = await this.load('markerClusterer', createMarker(null),
+            cluster = await this.load('MarkerClusterer', createMarker(null),
                 { gridSize: 70, styles: KMap.CLUSTER_STYLE('default'), ...options }
             );
         cluster.setData = function (data) {// 外观模式

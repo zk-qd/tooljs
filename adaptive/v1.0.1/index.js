@@ -2,7 +2,7 @@
  * @Author: zk 
  * @Date: 2021-01-26 14:08:16 
  * @Last Modified by: zk
- * @Last Modified time: 2021-02-01 18:41:57
+ * @Last Modified time: 2021-02-08 09:45:37
  */
 /**
  * TODO 依赖
@@ -99,7 +99,6 @@
             return dp_width;
         }
     }
-
     /**
      * @description px转rem
      * @param {Number} pixel 像素数值
@@ -108,12 +107,11 @@
      * @todo 用于pxtorem插件无法转换的地方 如行内样式
      * @todo 建议不要rem转px，因为px某种程度来说是绝对值
      * @todo 适用于mobile和pc
-     * @todo 在1920或者750像素下事先转好
+     * @todo 在1920或者750像素下事先转好,px转rem本就是在设计稿的宽度下事先转好
      */
     function pxtorem(pixel) {
         return pixel / (device().width / NORMAL_REMS)
     }
-
     /**
      * @description 以1920 or 750 为基的标准像素得到其他不同分辨率的像素
      * @param {Number} pixel 参考px 
@@ -121,7 +119,7 @@
      * @todo 用于无法使用rem的地方，如echart
      * @todo 适用于mobile和pc
      * @todo 注意的是： pc端用的full或者zoom，那么缩放或者非全屏的时候没办法实时转换，只能刷新页面才行，
-     * @todo 能用pxtorem尽量用
+     * @todo 能用pxtorem尽量用 
      */
     function realpx(pixel) {
         let px = pixel * virtualWidth(window.innerWidth, PC_NORMAL_FULL, PC_NORMAL_ZOOM) / device().width;
@@ -133,7 +131,6 @@
         // }
         return px;
     };
-
     /**
      * @description 根据屏幕浏览器大小调整html的字体大小
      * @param {Boolean} isMedia 是否使用媒体布局
@@ -189,7 +186,6 @@
             document.addEventListener('DOMContentLoaded', setBodyFontSize)
         }
     }
-
     /**
      * @description detect 0.5px supports
      * @todo 判断是否支持0.5px
@@ -210,6 +206,7 @@
             docEl.removeChild(fakeBody)
         }
     }
+
     return {
         // 方法
         device,
@@ -225,5 +222,6 @@
         MOBILE_NORMAL_SIZE,
         NORMAL_REMS, */
     }
+    
 });
 

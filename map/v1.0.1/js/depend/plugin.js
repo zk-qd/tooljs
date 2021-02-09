@@ -10,20 +10,20 @@ export default class Plugin {
     load(pluginName, ...args) {
         let fnName;
         switch (pluginName) {
-            case 'control':
-                fnName = 'loadControl';// 添加基础工具
+            case 'Control':
+                fnName = 'loadControl'; // 控件
                 pluginName = ['toolBar', 'scale', 'overView', 'MapType', 'Geolocation'];
                 break;
-            case 'geocoder':
-                fnName = 'loadGeocoder';// 地理编码对象
+            case 'Geocoder':
+                fnName = 'loadGeocoder'; // 地理编码
                 break;
-            case 'polyEditor':
+            case 'PolyEditor':
                 fnName = 'loadPolyEditor'; // 覆盖物编辑
                 break;
-            case 'mouseTool':
+            case 'MouseTool':
                 fnName = 'loadMouseTool'; // 鼠标工具
                 break;
-            case 'markerClusterer':
+            case 'MarkerClusterer':
                 fnName = 'loadMarkerClusterer'; // 点聚合
                 break;
         }
@@ -86,7 +86,7 @@ export default class Plugin {
             // 地理编码
             getLocation(address) {
                 // 传入数组批量查询 传入字符串查单个
-                new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => {
                     geocoder.getLocation(address, (status, result) => {
                         if (status === 'complete' && result.geocodes.length) resolve(result.geocodes[0].location)
                         else reject('经纬度查询失败');
@@ -96,7 +96,7 @@ export default class Plugin {
             },
             // 逆向地理编码
             getAddress(lnglat) {
-                new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => {
                     // 传入[[],[]]批量查或者 传入[]查询单个
                     geocoder.getAddress(lnglat, (status, result) => {
                         if (status === 'complete' && result.regeocode) resolve(result.regeocode.formattedAddress)

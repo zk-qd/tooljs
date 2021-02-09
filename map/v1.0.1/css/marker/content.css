@@ -1,23 +1,5 @@
-.amap-marker .marker-busstop {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: url(https://www.amap.com/assets/img/way_btn2.png) no-repeat -12px -139px;
-  cursor: pointer;
-  top: 24px;
-  left: 3px;
-}
-.amap-marker .marker-busstop-warning {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: url(../../image/marker/content/warning.png) no-repeat;
-  border-radius: 12px;
-  cursor: pointer;
-  top: 24px;
-  left: 3px;
-}
-/* 
+.amap-marker {
+  /* 
 // 由于 在地图上缩放的状态下 无法做到真正的居中
 .amap-marker .marker-busstop-warning::after {
   content: '';
@@ -31,7 +13,27 @@
   border-radius: 8px;
 } 
 */
-.amap-marker .marker-busstop-danger {
+}
+.amap-marker .marker-busstop {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: url(https://www.amap.com/assets/img/way_btn2.png) no-repeat -12px -139px;
+  cursor: pointer;
+  top: 24px;
+  left: 3px;
+}
+.amap-marker .amap-marker .marker-busstop-warning {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: url(../../image/marker/content/warning.png) no-repeat;
+  border-radius: 12px;
+  cursor: pointer;
+  top: 24px;
+  left: 3px;
+}
+.amap-marker .amap-marker .marker-busstop-danger {
   position: absolute;
   width: 12px;
   height: 12px;

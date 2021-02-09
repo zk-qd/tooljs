@@ -58,12 +58,12 @@ window.$tool = {
     /**
      * afterperform 之后执行
      * @param {Function} callback 执行函数
-     * @param {Function} condition 满足条件  使用传参调用
+     * @param {Function or *} condition 满足条件  使用传参调用
      * @param {Number} delay 延迟时间
      * todo 轨迹播放就用到过，在不同的函数中，要等待地图加载完毕，才能执行
      *  */
     afterperform(callback, condition = function () { return true }, delay = 400) {
-        if (condition()) {
+        if (typeof condition == 'function' ? condition() : condition) {
             callback();
         } else {
             setTimeout(() => {
