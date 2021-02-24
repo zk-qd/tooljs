@@ -55,7 +55,7 @@
     /**
      * @description mobile or pc下的标准参数
      */
-    function device() {
+    function draft() {
         if (isMobile) return {
             width: MOBILE_NORMAL_WIDTH,
             size: MOBILE_NORMAL_SIZE,
@@ -111,7 +111,7 @@
      * @todo 在1920或者750像素下事先转好
      */
     function pxtorem(pixel) {
-        return pixel / (device().width / NORMAL_REMS)
+        return pixel / (draft().width / NORMAL_REMS)
     }
 
     /**
@@ -124,7 +124,7 @@
      * @todo 能用pxtorem尽量用
      */
     function realpx(pixel) {
-        let px = pixel * virtualWidth(window.innerWidth, PC_NORMAL_FULL, PC_NORMAL_ZOOM) / device().width;
+        let px = pixel * virtualWidth(window.innerWidth, PC_NORMAL_FULL, PC_NORMAL_ZOOM) / draft().width;
         // if (isMobile) {//移动端需要dpr
         //     let dpr = window.devicePixelRatio || 1;
         //     return px * dpr;
@@ -215,7 +215,7 @@
         pxtorem,
         realpx,
         adapt,
-        device,
+        draft,
         // 属性
         /* PC_NORMAL_WIDTH,
         PC_NORMAL_SIZE,

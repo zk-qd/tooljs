@@ -4,7 +4,7 @@
  * @Last Modified by: zk
  * @Last Modified time: 2021-01-27 17:26:35
  */
-const { realpx, device } = $adaptive;
+const { realpx, draft } = $adaptive;
 /**
  * @description 图标内容要根据浏览器缩放自适应
  * @param  {...any} params 
@@ -15,7 +15,7 @@ function resize(...params) {
     );
 };
 // echart中如果没有写字体大小，官方会默认就是12px
-const ipx = realpx(device().size);// 一个标准字体大小单位，适配不同屏幕
+const ipx = realpx(draft().size);// 一个标准字体大小单位，适配不同屏幕
 
 export default {
     resize,

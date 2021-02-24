@@ -2,7 +2,7 @@
  * @Author: zk 
  * @Date: 2021-01-26 14:08:16 
  * @Last Modified by: zk
- * @Last Modified time: 2021-02-08 09:45:37
+ * @Last Modified time: 2021-02-24 09:55:02
  */
 /**
  * TODO 依赖
@@ -15,7 +15,7 @@
             ? window.$adaptive = factory(global)
             : factory(global);
     } else {
-        $adaptive = factory(global);
+        window.$adaptive = factory(global);
     }
 })(typeof window !== "undefined" ? window : this, function (global) {
     const isMobile = $user.isMobile();
@@ -51,11 +51,20 @@
             size: PC_NORMAL_SIZE * 2560 / PC_NORMAL_WIDTH, // 16
             rem: 2560 / NORMAL_REMS,
         },
+        {
+            min: 3840 * 0.8, // 2048
+            max: 3840,
+            dp: 3840,
+            description: '超大屏',
+            size: PC_NORMAL_SIZE * 3840 / PC_NORMAL_WIDTH, // 16
+            rem: 3840 / NORMAL_REMS,
+        },
     ]
     /**
      * @description mobile or pc下的标准参数
+     * @todo 移动端和pc端设计稿的属性
      */
-    function device() {
+    function draft() {
         if (isMobile) return {
             width: MOBILE_NORMAL_WIDTH,
             size: MOBILE_NORMAL_SIZE,
@@ -110,7 +119,7 @@
      * @todo 在1920或者750像素下事先转好,px转rem本就是在设计稿的宽度下事先转好
      */
     function pxtorem(pixel) {
-        return pixel / (device().width / NORMAL_REMS)
+        return pixel / (draft().width / NORMAL_REMS)
     }
     /**
      * @description 以1920 or 750 为基的标准像素得到其他不同分辨率的像素
@@ -122,7 +131,7 @@
      * @todo 能用pxtorem尽量用 
      */
     function realpx(pixel) {
-        let px = pixel * virtualWidth(window.innerWidth, PC_NORMAL_FULL, PC_NORMAL_ZOOM) / device().width;
+        let px = pixel * virtualWidth(window.innerWidth, PC_NORMAL_FULL, PC_NORMAL_ZOOM) / draft().width;
         // if (isMobile) {//移动端需要dpr
         //     let dpr = window.devicePixelRatio || 1;
         //     return px * dpr;
@@ -209,7 +218,7 @@
 
     return {
         // 方法
-        device,
+        draft,
         pxtorem,
         realpx,
         adapt,
@@ -222,6 +231,6 @@
         MOBILE_NORMAL_SIZE,
         NORMAL_REMS, */
     }
-    
+
 });
 
