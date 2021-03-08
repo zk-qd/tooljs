@@ -67,6 +67,10 @@ window.$math = {
         r2 = Number(arg2.toString().replace('.', ''));
         return (r1 / r2) * Math.pow(10, t2 - t1);
     },
+    // 获取大于等于min 小于max的随机数
+    randomScope(min, max) {
+        return Math.random() * (max - min) + min;
+    },
     // 生成n个随机字母
     randomCoding(n) {
         //创建26个字母数组
@@ -77,6 +81,11 @@ window.$math = {
             text.push(database[Math.floor(Math.random() * 48)]);
         }
         return text.join('');
+    },
+    // 生成随机数
+    random() {
+        let timestamp = Date.now();
+        return this.randomCoding(8) + timestamp;
     },
     // 传入 rgba(225,225,225) 生成十六进制颜色
     // 目前还透明还不能处理

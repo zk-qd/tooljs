@@ -81,7 +81,6 @@ window.$design = {
 
         }
         return constrol;
-
     },
 
     /**

@@ -18,7 +18,10 @@ window.$array = {sort(target, type = 'up', key) {
         else if (right && !left) result = first < target && target <= last;
         else if (!right && !left) result = first < target && target < last;
         return result;
-    }
+    },toArray(o) {
+        if (!(o instanceof Array)) return [o];
+        else return o;
+    },
 
 }
 
@@ -246,7 +249,6 @@ window.$design = {observer: function () {
 
         }
         return constrol;
-
     },command: function (command = {}) {
         if (new.target !== $design.command) return new $design.command(command);
         return {execute(args) {
@@ -516,6 +518,9 @@ window.$math = {
         r2 = Number(arg2.toString().replace('.', ''));
         return (r1 / r2) * Math.pow(10, t2 - t1);
     },
+    randomScope(min, max) {
+        return Math.random() * (max - min) + min;
+    },
     randomCoding(n) {
         let database = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
             text = [];
@@ -524,6 +529,10 @@ window.$math = {
             text.push(database[Math.floor(Math.random() * 48)]);
         }
         return text.join('');
+    },
+    random() {
+        let timestamp = Date.now();
+        return this.randomCoding(8) + timestamp;
     },
     rgbtohex(rgb) {
         let { r, g, b } = rgb.match(/rgb\(\s*(?<r>\d*),\s*(?<g>\d*),\s*(?<b>\d*)\)/).groups;

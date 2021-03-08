@@ -1,6 +1,7 @@
 /**
  * TODO 依赖
  * * $adaptive
+ * * $tool
  */
 
 // adapt
@@ -9,6 +10,7 @@ const {
     resize,
     ipx
 } = adapt
+
 // variable
 import * as variable from './variable'
 

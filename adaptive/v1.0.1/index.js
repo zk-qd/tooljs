@@ -2,7 +2,7 @@
  * @Author: zk 
  * @Date: 2021-01-26 14:08:16 
  * @Last Modified by: zk
- * @Last Modified time: 2021-02-24 09:55:02
+ * @Last Modified time: 2021-02-26 17:46:50
  */
 /**
  * TODO 依赖
@@ -32,7 +32,6 @@
     const PC_NORMAL_FULL = false; // 是否全屏适配字体
     const PC_NORMAL_ZOOM = false; // 是否缩放适配字体
 
-
     /* 不同屏幕下浏览器的标准 */
     const PC_NORMAL_SCREEN = [
         {
@@ -41,7 +40,7 @@
             dp: PC_NORMAL_WIDTH, // 设备宽度
             description: '小屏',
             size: PC_NORMAL_SIZE, // 字体大小
-            rem: PC_NORMAL_WIDTH / NORMAL_REMS, // 1rem多少像素
+            ppr: PC_NORMAL_WIDTH / NORMAL_REMS, // 1rem多少像素  => pixel per rem
         },
         {
             min: 2560 * 0.8, // 2048
@@ -49,15 +48,15 @@
             dp: 2560,
             description: '大屏',
             size: PC_NORMAL_SIZE * 2560 / PC_NORMAL_WIDTH, // 16
-            rem: 2560 / NORMAL_REMS,
+            ppr: 2560 / NORMAL_REMS,
         },
         {
-            min: 3840 * 0.8, // 2048
+            min: 3840 * 0.8, // 3072
             max: 3840,
             dp: 3840,
             description: '超大屏',
-            size: PC_NORMAL_SIZE * 3840 / PC_NORMAL_WIDTH, // 16
-            rem: 3840 / NORMAL_REMS,
+            size: PC_NORMAL_SIZE * 3840 / PC_NORMAL_WIDTH, // 24
+            ppr: 3840 / NORMAL_REMS,
         },
     ]
     /**
@@ -153,7 +152,6 @@
         else resize();
     }
 
-
     /**
      * @description 根据屏幕大小变化实时调整
      */
@@ -178,7 +176,7 @@
      */
     function media() {
         const styleEl = document.createElement('style'), headEL = document.head;
-        styleEl.innerHTML = PC_NORMAL_SCREEN.reverse().map(screen => `@media screen and (max-width: ${screen.dp}) {html { font-size: ${screen.rem}px!important; }}`).join('').trim();
+        styleEl.innerHTML = PC_NORMAL_SCREEN.reverse().map(screen => `@media screen and (max-width: ${screen.dp}) {html { font-size: ${screen.ppr}px!important; }}`).join('').trim();
         headEL.insertAdjacentElement('afterend', styleEl);
     }
 
@@ -212,12 +210,12 @@
             if (testElement.offsetHeight === 1) {
                 docEl.classList.add('hairlines')
             }
-            docEl.removeChild(fakeBody)
+            docEl.removeChild(fakeBody);
         }
     }
 
     return {
-        // 方法
+        // 方法 
         draft,
         pxtorem,
         realpx,

@@ -51,12 +51,31 @@ export default function axis({
         // splitArea: {  // 相间条纹 默认为true ，设置在数值轴上
         //     show: false
         // },
-        // axisPointer: {// tooltip时候垂直线的颜色 ，设置在数值轴上
-        //     type: 'shadow'
-        // }
     }
 }
 
+
+/**
+ * axis属性
+ * 
+ * name系列： 单位
+ * - 名称
+ * - 位置
+ * - 样式
+ * 等等
+ * 
+ * axisLabel系列： 轴值
+ * - 样式
+ * - 其他配置
+ * 
+ * axisLine系列： 轴线
+ * 
+ * axisTick系列： 轴刻度
+ * 
+ * splitArea系列： 区域分割
+ * 
+ * 
+ */
 
 
 

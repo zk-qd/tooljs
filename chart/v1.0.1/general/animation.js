@@ -7,8 +7,8 @@ export default {
     },
     custom: ({ duration: animationDuration, easing: animationEasing } = {}) => {
         return {
-            animationDuration: duration,
-            animationEasing: easing,
+            animationDuration: animationDuration,
+            animationEasing: animationEasing,
         }
     }
 }

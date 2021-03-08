@@ -27,7 +27,6 @@ window.$array = {
      * @param {number} target 数字
      * @param {boolean} right 右边界 是否包含有边界
      * @param {boolean} left 左边界
-     * 
      */
     withinScope(scope, target, right = true, left = true) {
         if (!scope) return false;
@@ -38,6 +37,15 @@ window.$array = {
         else if (right && !left) result = first < target && target <= last;
         else if (!right && !left) result = first < target && target < last;
         return result;
-    }
+    },
+    /**
+     * @description 非数组转数组
+     * @param {*} o
+     * @returns {string} 
+     */
+    toArray(o) {
+        if (!(o instanceof Array)) return [o];
+        else return o;
+    },
 
 }

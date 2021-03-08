@@ -1,10 +1,9 @@
 /*
  * @Author: zk 
  * @Date: 2021-01-14 18:14:07 
- * @Last Modified by:   zk 
- * @Last Modified time: 2021-01-14 18:14:07 
+ * @Last Modified by: zk
+ * @Last Modified time: 2021-02-26 10:35:23
  */
-
 /**
  * @param {String} trigger `axis,item`
  * @param {String or Array} unit 单位  (如果单位全部是一样的，那么就是String，如果单位不一样那么就要数组了)
