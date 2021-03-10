@@ -1,4 +1,4 @@
-const ADO = require('./index');
+const ADO = require('./server');
 let local = {
     user: [
         {

@@ -25,6 +25,23 @@ window.$array = {sort(target, type = 'up', key) {
 
 }
 
+//Check.js
+window.$check = {
+    isNativeFunction(fn) {
+        return Function.toString.call(fn).indexOf("[native code]") !== -1;
+    },isObject(val) {
+        return Object == val.constructor;
+    },isPromise(obj) {
+        return 'function' == typeof obj.then;
+    },isGenerator(obj) {
+        return 'function' == typeof obj.next && 'function' == typeof obj.throw;
+    },isGeneratorFunction(obj) {
+        var constructor = obj.constructor;
+        if (!constructor) return false;
+        if ('GeneratorFunction' === constructor.name || 'GeneratorFunction' === constructor.displayName) return true;
+        return isGenerator(constructor.prototype);
+    },
+}
 //Date.js
 
 
@@ -693,5 +710,5 @@ window.$tool = {debounce(handler, delay = 400, immediate = false) {
 //Validate.js
 
 window.$validate = {
-    
+  
 }
