@@ -615,7 +615,7 @@ window.ObjectKit = {
             return this
         }
     },StateModel: function (states) {
-        if (new.target !== $design.state) { return new $design.state(states) }
+        if (new.target !== ObjectKit.StateModel) { return new ObjectKit.StateModel(states) }
         let currentState = {};
         let constrol = {
             change(...args) {
@@ -637,7 +637,7 @@ window.ObjectKit = {
         return constrol;
 
     },CommandModel: function (command = {}) {
-        if (new.target !== $design.command) return new $design.command(command);
+        if (new.target !== ObjectKit.CommandModel) return new ObjectKit.CommandModel(command);
         return {execute(args) {
                 if (Object.prototype.toString.call(args) === '[object Array]') {
                     args.forEach(this.execute)
