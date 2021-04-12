@@ -189,7 +189,7 @@ window.$date = {
                 return this._24().flatMap(item => [item, item.replace(/:00/, ':30')]);
             }
         }
-        return state['_' + type];
+        return state['_' + type]();
     },
     /**
      * @description 获取近n天，月，年。集合

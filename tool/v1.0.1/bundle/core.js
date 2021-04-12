@@ -180,7 +180,7 @@ window.$date = {format(date, format = 'yyyy-MM-dd') {
                 return this._24().flatMap(item => [item, item.replace(/:00/, ':30')]);
             }
         }
-        return state['_' + type];
+        return state['_' + type]();
     },recents(sum, type = 'day', format) {
         let current = new Date(),
             year = current.getFullYear(),
@@ -536,7 +536,7 @@ window.$math = {
         return (r1 / r2) * Math.pow(10, t2 - t1);
     },
     randomScope(min, max) {
-        return Math.random() * (max - min) + min;
+        return Math.floor(Math.random() * (max - min) + min);
     },
     randomCoding(n) {
         let database = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
@@ -550,6 +550,8 @@ window.$math = {
     random() {
         let timestamp = Date.now();
         return this.randomCoding(8) + timestamp;
+    },randomArray(len, min, max) {
+        return '.'.repeat(len - 1).split('.').map(item => this.randomScope(min, max));
     },
     rgbtohex(rgb) {
         let { r, g, b } = rgb.match(/rgb\(\s*(?<r>\d*),\s*(?<g>\d*),\s*(?<b>\d*)\)/).groups;

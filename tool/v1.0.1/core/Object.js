@@ -57,7 +57,7 @@ window.$object = {
         return Mix;
     },
     /**
-     * @description 通过属性获取对象属性值
+     * @description 通过属性字符串获取对象属性值
      * @param {object} target
      * @param {string} propstring
      * @return {*} 返回获取的属性值

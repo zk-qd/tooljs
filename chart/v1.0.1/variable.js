@@ -2,15 +2,13 @@
  * @Author: zk 
  * @Date: 2021-01-15 11:39:15 
  * @Last Modified by: zk
- * @Last Modified time: 2021-01-15 11:41:08
+ * @Last Modified time: 2021-03-11 15:47:25
  */
-import echarts from 'echarts';
+import * as echarts from 'echarts';
 
 // adapt
 import adapt from './adapt';
 const {
-    realpx,
-    resize,
     ipx
 } = adapt
 

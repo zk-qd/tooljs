@@ -2,87 +2,96 @@
 // 图层一般不需要插件
 // 注：addLayer，添加图层获取返回的图层，直接就可以调用方法 移除 显示 隐藏，一般还是建议走这里的方法
 export default class Layer {
-    static LAYER = {
-        TileLayer: {
-            describ: '标准图层', // 描述
-            target: null, // 图层对象
-            options: {}, // 配置
-        },
-        'TileLayer.Satellite': {
-            describ: '卫星图层',
-        },
-        'TileLayer.RoadNet': {
-            describ: '路网图层'
-        },
-        'TileLayer.Traffic': {
-            describ: '实时交通图层', // 有实时路况
-        },
-        'Buildings': {
-            describ: '楼块图层'
-        },
-        'IndoorMap': {
-            describ: '室内地图'
-        },
-        // 瓦片
-        'TileLayer.WMS': {
-            describ: 'wms图层',
-        },
-        'TileLayer.WMTS': {
-            describ: 'wmts图层',
-        }
-    }
-    constructor() { }
-    /**
-     * @param {string} className 图层类名
-     * @param {options} 图层配置
-     * @returns {layer} 图层
-     */
-    addLayer(className, options) {
-        let layer = getLayer(className);
-        if (!layer.target)
-            layer.target = new $object.valueAt(KMap.AMap, className)(Object.assign(layer.options, options));
-        layer.target.setMap(this.$map);
-        return layer.target;
-    }
-    /**
-     * @param {string} className 图层类名
-     * @returns {*} 图层 or false
-     */
-    rmLayer(className) {
-        let layer = getLayer(className);
-        if (layer.target) {
-            layer.target.setMap(null);
-            return layer.target; // 移除成功
-        } else {
-            return false;// 移除失败
-        };
-    }
-    showLayer(className) {
-        let layer = getLayer(className);
-        if (layer.target) {
-            layer.target.show()
-            return layer.target; // 显示成功
-        } else {
-            return false;// 显示失败
-        };
-    }
-    hideLayer(className) {
-        let layer = getLayer(className);
-        if (layer.target) {
-            layer.target.hide()
-            return layer.target; // 隐藏成功
-        } else {
-            return false;// 隐藏失败
-        };
-    }
-}
+  static LAYER = {
+    TileLayer: {
+      describ: "标准图层", // 描述
+      target: null, // 图层对象
+      options: {}, // 配置
+    },
+    "TileLayer.Satellite": {
+      describ: "卫星图层",
+      options: {}, // 配置
+    },
+    "TileLayer.RoadNet": {
+      describ: "路网图层",
+      options: {}, // 配置
+    },
+    "TileLayer.Traffic": {
+      describ: "实时交通图层", // 有实时路况
+      options: {}, // 配置
+    },
+    Buildings: {
+      describ: "楼块图层",
+      options: {}, // 配置
+    },
+    IndoorMap: {
+      describ: "室内地图",
+      options: {}, // 配置
+    },
+    // 瓦片
+    "TileLayer.WMS": {
+      describ: "wms图层",
+      options: {}, // 配置
+    },
+    "TileLayer.WMTS": {
+      describ: "wmts图层",
+      options: {}, // 配置
+    },
+  };
+  constructor() {}
+  /**
+   * @param {string} className 图层类名
+   * @param {options} 图层配置
+   * @returns {layer} 图层
+   */
+  addLayer(className, options) {
+    let layer = this.getLayer(className);
+    debugger;
+    if (!layer.target)
+      layer.target = Reflect.construct($object.valueAt(KMap.AMap, className), [
+        Object.assign(layer.options, options),
+      ]);
 
-function getLayer(className) {
-    let layer = this.LAYER[className];
-    if (!layer) throw new TypeError('不存在该图层', className);
+    layer.target.setMap(this.$map);
+    return layer.target;
+  }
+  /**
+   * @param {string} className 图层类名
+   * @returns {*} 图层 or false
+   */
+  rmLayer(className) {
+    let layer = this.getLayer(className);
+    if (layer.target) {
+      layer.target.setMap(null);
+      return layer.target; // 移除成功
+    } else {
+      return false; // 移除失败
+    }
+  }
+  showLayer(className) {
+    let layer = this.getLayer(className);
+    if (layer.target) {
+      layer.target.show();
+      return layer.target; // 显示成功
+    } else {
+      return false; // 显示失败
+    }
+  }
+  hideLayer(className) {
+    let layer = this.getLayer(className);
+    if (layer.target) {
+      layer.target.hide();
+      return layer.target; // 隐藏成功
+    } else {
+      return false; // 隐藏失败
+    }
+  }
+  getLayer(className) {
+    let layer = Layer.LAYER[className];
+    if (!layer) throw new TypeError("不存在该图层", className);
     return layer;
+  }
 }
-
 
 /*
 通用属性

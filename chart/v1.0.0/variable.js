@@ -4,7 +4,7 @@
  * @Last Modified by: zk
  * @Last Modified time: 2021-01-15 11:41:08
  */
-import echarts from 'echarts';
+import * as echarts from 'echarts';
 
 // adapt
 import adapt from './adapt';

@@ -67,9 +67,9 @@ window.$math = {
         r2 = Number(arg2.toString().replace('.', ''));
         return (r1 / r2) * Math.pow(10, t2 - t1);
     },
-    // 获取大于等于min 小于max的随机数
+    // 获取大于等于min 小于max的随机整数
     randomScope(min, max) {
-        return Math.random() * (max - min) + min;
+        return Math.floor(Math.random() * (max - min) + min);
     },
     // 生成n个随机字母
     randomCoding(n) {
@@ -86,6 +86,15 @@ window.$math = {
     random() {
         let timestamp = Date.now();
         return this.randomCoding(8) + timestamp;
+    },
+    /** 
+     * @todo 随机数组
+     * @param {*} len 该数组的长度
+     * @param {*} min 数组项最小值
+     * @param {*} max 数组项最大值
+     */
+    randomArray(len, min, max) {
+        return '.'.repeat(len - 1).split('.').map(item => this.randomScope(min, max));
     },
     // 传入 rgba(225,225,225) 生成十六进制颜色
     // 目前还透明还不能处理
